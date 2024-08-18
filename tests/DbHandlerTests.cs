@@ -5,7 +5,7 @@ namespace LeBonCoinAlert.tests;
 
 public class DbHandlerTests : IDisposable
 {
-    private readonly FlatAdRepository _flatAdRepository = new();
+    private readonly FlatAdRepository _flatAdRepository = new(new AppDbContext());
 
     public void Dispose()
     {
@@ -18,15 +18,15 @@ public class DbHandlerTests : IDisposable
         // Arrange
         var ads = new List<FlatAd>
         {
-            new("Location 1", "Ad 1", "450", "url"),
-            new("Location 2", "Ad 2", "500", "url")
+            new("Location 1", "Ad 1", "450", "url", "extraParam"),
+            new("Location 2", "Ad 2", "500", "url", "extraParam")
         };
-
-        _flatAdRepository.UpsertFlatAds(ads);
+        var telegramUser = "telegramuser";
+        _flatAdRepository.UpsertFlatAds(ads, telegramUser);
 
         // Act
         _flatAdRepository.DeleteAllFlatAds();
-        var result = _flatAdRepository.ReadFlatAds();
+        var result = _flatAdRepository.GetFlatAds();
 
         // Assert
         Assert.Empty(result);
@@ -38,13 +38,14 @@ public class DbHandlerTests : IDisposable
         // Arrange
         var ads = new List<FlatAd>
         {
-            new("Location 1", "Ad 1", "450", "url"),
-            new("Location 2", "Ad 2", "500", "url")
+            new("Location 1", "Ad 1", "450", "url", "extraParam"),
+            new("Location 2", "Ad 2", "500", "url", "extraParam2")
         };
+        var telegramUser = "telegramuser";
 
         // Act
-        _flatAdRepository.UpsertFlatAds(ads);
-        var result = _flatAdRepository.ReadFlatAds();
+        _flatAdRepository.UpsertFlatAds(ads, telegramUser);
+        var result = _flatAdRepository.GetFlatAds();
 
         // Assert
         Assert.Equal(2, result.Count);
@@ -58,14 +59,15 @@ public class DbHandlerTests : IDisposable
         // Arrange
         var ads = new List<FlatAd>
         {
-            new("Location 1", "Ad 1", "450", "url"),
-            new("Location 2", "Ad 2", "500", "url")
+            new("Location 1", "Ad 1", "450", "url", "extraParam"),
+            new("Location 2", "Ad 2", "500", "url", "extraParam2")
         };
+        var telegramUser = "telegramuser";
 
-        _flatAdRepository.UpsertFlatAds(ads);
+        _flatAdRepository.UpsertFlatAds(ads, telegramUser);
 
         // Act
-        var result = _flatAdRepository.ReadFlatAds();
+        var result = _flatAdRepository.GetFlatAds();
 
         // Assert
         Assert.Equal(2, result.Count);
