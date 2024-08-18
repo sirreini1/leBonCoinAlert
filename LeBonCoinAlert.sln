@@ -1,0 +1,17 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+#
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeBonCoinAlert", "LeBonCoinAlert.csproj", "{F025290D-8854-47B5-B1D2-C16C26EDC21E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F025290D-8854-47B5-B1D2-C16C26EDC21E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F025290D-8854-47B5-B1D2-C16C26EDC21E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F025290D-8854-47B5-B1D2-C16C26EDC21E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F025290D-8854-47B5-B1D2-C16C26EDC21E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
