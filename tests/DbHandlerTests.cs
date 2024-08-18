@@ -1,14 +1,15 @@
-﻿using Xunit;
+﻿using LeBonCoinAlert.DB;
+using Xunit;
 
 namespace LeBonCoinAlert.tests;
 
 public class DbHandlerTests : IDisposable
 {
-    private readonly DbHandler _dbHandler = new();
+    private readonly FlatAdRepository _flatAdRepository = new();
 
     public void Dispose()
     {
-        _dbHandler.DeleteAllFlatAds();
+        _flatAdRepository.DeleteAllFlatAds();
     }
 
     [Fact]
@@ -17,15 +18,15 @@ public class DbHandlerTests : IDisposable
         // Arrange
         var ads = new List<FlatAd>
         {
-            new("Location 1", "Ad 1", "450"),
-            new("Location 2", "Ad 2", "500")
+            new("Location 1", "Ad 1", "450", "url"),
+            new("Location 2", "Ad 2", "500", "url")
         };
 
-        _dbHandler.UpsertFlatAds(ads);
+        _flatAdRepository.UpsertFlatAds(ads);
 
         // Act
-        _dbHandler.DeleteAllFlatAds();
-        var result = _dbHandler.ReadFlatAds();
+        _flatAdRepository.DeleteAllFlatAds();
+        var result = _flatAdRepository.ReadFlatAds();
 
         // Assert
         Assert.Empty(result);
@@ -37,13 +38,13 @@ public class DbHandlerTests : IDisposable
         // Arrange
         var ads = new List<FlatAd>
         {
-            new("Location 1", "Ad 1", "450"),
-            new("Location 2", "Ad 2", "500")
+            new("Location 1", "Ad 1", "450", "url"),
+            new("Location 2", "Ad 2", "500", "url")
         };
 
         // Act
-        _dbHandler.UpsertFlatAds(ads);
-        var result = _dbHandler.ReadFlatAds();
+        _flatAdRepository.UpsertFlatAds(ads);
+        var result = _flatAdRepository.ReadFlatAds();
 
         // Assert
         Assert.Equal(2, result.Count);
@@ -57,14 +58,14 @@ public class DbHandlerTests : IDisposable
         // Arrange
         var ads = new List<FlatAd>
         {
-            new("Location 1", "Ad 1", "450"),
-            new("Location 2", "Ad 2", "500")
+            new("Location 1", "Ad 1", "450", "url"),
+            new("Location 2", "Ad 2", "500", "url")
         };
 
-        _dbHandler.UpsertFlatAds(ads);
+        _flatAdRepository.UpsertFlatAds(ads);
 
         // Act
-        var result = _dbHandler.ReadFlatAds();
+        var result = _flatAdRepository.ReadFlatAds();
 
         // Assert
         Assert.Equal(2, result.Count);

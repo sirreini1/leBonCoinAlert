@@ -1,45 +1,36 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
-namespace LeBonCoinAlert;
+namespace LeBonCoinAlert.DB;
 
-public class FlatAdEntity(string location, string description, string price, long id = 0)
+public class FlatAdEntity(string location, string description, string price, string url, long id = 0)
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; } = id; // Unique identifier for each ad (list_id)
 
-    [MaxLength(255)] public string Location { get; set; } = location;
-    [MaxLength(1000)] public string Description { get; set; } = description;
-    [MaxLength(10)] public string Price { get; set; } = price;
+    [MaxLength(255)] public string Location { get; init; } = location;
+    [MaxLength(1000)] public string Description { get; init; } = description;
+    [MaxLength(10)] public string Price { get; init; } = price;
+
+    [MaxLength(1000)] public string Url { get; set; } = url;
 
     public static FlatAdEntity FromFlatAd(FlatAd flatAd)
     {
-        return new FlatAdEntity(flatAd.Location, flatAd.Description, flatAd.Price);
+        return new FlatAdEntity(flatAd.Location, flatAd.Description, flatAd.Price, flatAd.Url);
     }
 
     public static FlatAd ToFlatAd(FlatAdEntity flatAdEntity)
     {
-        return new FlatAd(flatAdEntity.Location, flatAdEntity.Description, flatAdEntity.Price);
+        return new FlatAd(flatAdEntity.Location, flatAdEntity.Description, flatAdEntity.Price, flatAdEntity.Url);
     }
 }
 
-public class AppDbContext : DbContext
-{
-    public DbSet<FlatAdEntity> FlatAds { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlite("Data Source=LeBonCoinAlert.db");
-    }
-}
-
-public class DbHandler
+public class FlatAdRepository
 {
     private readonly AppDbContext _context;
 
-    public DbHandler()
+    public FlatAdRepository()
     {
         _context = new AppDbContext();
         _context.Database.EnsureCreated();
