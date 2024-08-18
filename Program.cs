@@ -27,7 +27,6 @@ string GetFormattedMessage(FlatAd ad)
 {
     const string leBonCoinBaseUrl = "https://www.leboncoin.fr";
     var message = $"""
-                   New ad!:
                    description: {ad.Description}
                    price: {ad.Price}
                    location: {ad.Location})
