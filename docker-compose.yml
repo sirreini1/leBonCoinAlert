@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  leboncoinalert:
+    image: leboncoinalert:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    env_file:
+      - .env

@@ -73,10 +73,18 @@ namespace LeBonCoinAlert
                 var chatId = msg.Chat.Id.ToString();
                 _userPairChatIdRepository.SaveUserChatIdPair(new UserChatIdPair(telegramUser, chatId));
 
+                if(msg.Text == "/help")
+                {
+                    await bot.SendTextMessageAsync(msg.Chat,
+                        "Commands:\n /start - Start the bot\n /watch - Watch a search url\n /list - List all watched search urls\n /remove - Remove a search url",
+                        cancellationToken: cts.Token,
+                        linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
+                }
+                
                 if (msg.Text == "/start")
                 {
                     await bot.SendTextMessageAsync(msg.Chat,
-                        "Welcome to the LeBonCoinBot, start watching a search by typing /watch and the search url to watch. Just like this:\n /watch https://www.leboncoin.fr/recherche?....",
+                        "Welcome to the LeBonCoinBot, start watching a search by typing /watch and the search url to watch. Just like this:\n /watch https://www.leboncoin.fr/recherche?.... \n type /help to see all commands",
                         cancellationToken: cts.Token,
                         linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
                 }
