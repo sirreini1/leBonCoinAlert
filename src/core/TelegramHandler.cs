@@ -4,23 +4,18 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert
+namespace LeBonCoinAlert.core
 {
-    public class TelegramHandler(
-        FlatAdRepository flatAdRepository,
-        UserPairChatIdRepository userPairChatIdRepository)
+    public class TelegramHandler(UserPairChatIdRepository userPairChatIdRepository, FlatAdRepository flatAdRepository)
     {
-        private readonly UserPairChatIdRepository _userPairChatIdRepository = userPairChatIdRepository;
-        private readonly FlatAdRepository _flatAdRepository = flatAdRepository;
+        private readonly TelegramBotClient _bot = CreateBot(flatAdRepository, userPairChatIdRepository);
 
-
-        public async Task SendMessageToUser(TelegramBotClient bot, string userId,
-            string message)
+        public async Task SendMessageToUser(string userId, string message)
         {
-            var userChatIdPair = _userPairChatIdRepository.FindChatByUserId(userId);
+            var userChatIdPair = userPairChatIdRepository.FindChatByUserId(userId);
             if (userChatIdPair?.ChatId != null)
             {
-                await bot.SendTextMessageAsync(userChatIdPair.ChatId, message);
+                await _bot.SendTextMessageAsync(userChatIdPair.ChatId, message);
             }
             else
             {
@@ -28,7 +23,8 @@ namespace LeBonCoinAlert
             }
         }
 
-        public TelegramBotClient CreateBot()
+        public static TelegramBotClient CreateBot(FlatAdRepository flatAdRepository,
+            UserPairChatIdRepository userPairChatIdRepository)
         {
             var botToken = Environment.GetEnvironmentVariable("TOKEN");
             if (botToken is null)
@@ -47,9 +43,10 @@ namespace LeBonCoinAlert
             return bot;
 
             // method to handle errors in polling or in your OnMessage/OnUpdate code
-            async Task OnError(Exception exception, HandleErrorSource source)
+            Task OnError(Exception exception, HandleErrorSource source)
             {
                 Console.WriteLine(exception); // just dump the exception to the console
+                return Task.CompletedTask;
             }
 
             // method that handle other types of updates received by the bot:
@@ -63,25 +60,27 @@ namespace LeBonCoinAlert
             // method that handle messages received by the bot:
             async Task OnMessage(Message? msg, UpdateType type)
             {
-                if (msg is null)
+                if (msg?.Text is null)
                 {
                     Console.WriteLine("Error no message");
                     return;
                 }
 
+                var msgText = msg.Text.ToLower();
+
                 var telegramUser = msg.From!.Id.ToString();
                 var chatId = msg.Chat.Id.ToString();
-                _userPairChatIdRepository.SaveUserChatIdPair(new UserChatIdPair(telegramUser, chatId));
+                userPairChatIdRepository.SaveUserChatIdPair(new UserChatIdPair(telegramUser, chatId));
 
-                if(msg.Text == "/help")
+                if (msgText == "/help")
                 {
                     await bot.SendTextMessageAsync(msg.Chat,
                         "Commands:\n /start - Start the bot\n /watch - Watch a search url\n /list - List all watched search urls\n /remove - Remove a search url",
                         cancellationToken: cts.Token,
                         linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
                 }
-                
-                if (msg.Text == "/start")
+
+                if (msgText == "/start")
                 {
                     await bot.SendTextMessageAsync(msg.Chat,
                         "Welcome to the LeBonCoinBot, start watching a search by typing /watch and the search url to watch. Just like this:\n /watch https://www.leboncoin.fr/recherche?.... \n type /help to see all commands",
@@ -89,9 +88,9 @@ namespace LeBonCoinAlert
                         linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
                 }
 
-                if (msg.Text == "/list")
+                if (msgText == "/list")
                 {
-                    var userAds = _flatAdRepository.GetFlatAdsForUser(telegramUser);
+                    var userAds = flatAdRepository.GetFlatAdsForUser(telegramUser);
                     var uniqueSearchUrls = userAds.Select(ad => ad.SearchUrl).Distinct().OrderByDescending(url => url)
                         .ToList();
 
@@ -114,12 +113,12 @@ namespace LeBonCoinAlert
                         linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
                 }
 
-                if (msg.Text!.StartsWith("/remove"))
+                if (msgText.StartsWith("/remove"))
                 {
                     try
                     {
-                        var id = int.Parse(msg.Text.Split(" ")[1]);
-                        var userAds = _flatAdRepository.GetFlatAdsForUser(telegramUser);
+                        var id = int.Parse(msgText.Split(" ")[1]);
+                        var userAds = flatAdRepository.GetFlatAdsForUser(telegramUser);
                         var uniqueSearchUrls = userAds.Select(ad => ad.SearchUrl).Distinct()
                             .OrderByDescending(url => url)
                             .ToList();
@@ -131,7 +130,7 @@ namespace LeBonCoinAlert
                         }
 
                         var searchUrl = uniqueSearchUrls[id];
-                        _flatAdRepository.DeleteFlatAdsForUserAndUrl(telegramUser, searchUrl);
+                        flatAdRepository.DeleteFlatAdsForUserAndUrl(telegramUser, searchUrl);
                         await bot.SendTextMessageAsync(msg.Chat, $"Removed search url with id: {id}",
                             cancellationToken: cts.Token);
                     }
@@ -143,9 +142,9 @@ namespace LeBonCoinAlert
                     }
                 }
 
-                if (msg.Text.StartsWith("/watch"))
+                if (msgText.StartsWith("/watch"))
                 {
-                    var url = msg.Text.Split(" ")[1];
+                    var url = msgText.Split(" ")[1];
                     if (!url.StartsWith("https://www.leboncoin.fr/recherche?"))
                     {
                         await bot.SendTextMessageAsync(msg.Chat,
@@ -154,7 +153,7 @@ namespace LeBonCoinAlert
                     }
 
                     var flatAds = await AdExtractor.GetAdsFromUrl(url);
-                    if (_flatAdRepository.EntriesForURlAndUserExist(url, telegramUser))
+                    if (flatAdRepository.EntriesForURlAndUserExist(url, telegramUser))
                     {
                         await bot.SendTextMessageAsync(msg.Chat, "Already watching ads for this url",
                             cancellationToken: cts.Token,
@@ -162,7 +161,7 @@ namespace LeBonCoinAlert
                     }
                     else
                     {
-                        _flatAdRepository.UpsertFlatAds(flatAds, telegramUser);
+                        flatAdRepository.UpsertFlatAds(flatAds, telegramUser);
                         Console.WriteLine("Starting to watch ads from " + url);
                         await bot.SendTextMessageAsync(msg.Chat, "Starting to watch ads from " + url,
                             cancellationToken: cts.Token,

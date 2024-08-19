@@ -1,4 +1,5 @@
-﻿using LeBonCoinAlert.DB;
+﻿using LeBonCoinAlert.core;
+using LeBonCoinAlert.DB;
 using Xunit;
 
 namespace LeBonCoinAlert.tests;

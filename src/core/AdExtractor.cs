@@ -1,24 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
-namespace LeBonCoinAlert;
-
-public class FlatAd(string location, string description, string price, string searchUrl, string adUrl)
-{
-    public string Location { get; set; } = location;
-    public string adUrl { get; set; } = adUrl;
-    public string Description { get; set; } = description;
-    public string Price { get; set; } = price;
-
-    public string SearchUrl { get; set; } = searchUrl;
-
-    public FlatAd(FlatAdDto details, string searchUrl) : this(details.Location, details.Description,
-        details.Price, searchUrl, details.AdUrl)
-    {
-    }
-}
-
-public record FlatAdDto(string Location, string Description, string Price, string AdUrl);
+namespace LeBonCoinAlert.core;
 
 public static partial class AdExtractor
 {
