@@ -15,10 +15,15 @@ public static partial class AdExtractor
 
     private static List<HtmlNode> GetListingNodes(string htmlContent)
     {
+        if (htmlContent == null)
+        {
+            throw new ArgumentNullException(nameof(htmlContent), "HTML content cannot be null.");
+        }
+
         var htmlDoc = new HtmlDocument();
         htmlDoc.LoadHtml(htmlContent);
 
-        var aTagNodes = htmlDoc.DocumentNode.SelectNodes("//a[starts-with(@data-test-id, 'ad')]")
+        var aTagNodes = htmlDoc.DocumentNode.SelectNodes("//a[starts-with(@href, '/ad/')]")
             .Where(node => node.InnerText.Contains('€'))
             .Where(node => !node.InnerHtml.Contains("Sponsorisé"))
             .Where(node => !node.InnerHtml.Contains("advertising"))

@@ -145,7 +145,7 @@ namespace LeBonCoinAlert.core
                 if (msgText.StartsWith("/watch"))
                 {
                     var url = msgText.Split(" ")[1];
-                    if (!url.StartsWith("https://www.leboncoin.fr/recherche?"))
+                    if (!url.StartsWith("https://www.leboncoin.fr/"))
                     {
                         await bot.SendTextMessageAsync(msg.Chat,
                             "Invalid URL. Please provide a valid LeBonCoin search URL.", cancellationToken: cts.Token);
