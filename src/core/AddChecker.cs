@@ -41,7 +41,7 @@ public class AddChecker(FlatAdRepository flatAdRepository, TelegramHandler teleg
         var message = $"""
                        description: {ad.Description}
                        price: {ad.Price}
-                       location: {ad.Location})
+                       location: {ad.Location}
                        url: {leBonCoinBaseUrl}{ad.AdUrl}
                        """;
 

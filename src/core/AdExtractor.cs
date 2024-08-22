@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Web;
 using HtmlAgilityPack;
 
 namespace LeBonCoinAlert.core;
@@ -40,11 +41,26 @@ public static partial class AdExtractor
     {
         var details = node.SelectNodes(".//p")
             .Select(htmlNode => htmlNode.InnerText).ToArray();
-        var price = PriceRegex().Replace(details[0], string.Empty);
+
+        var originalPriceDetail = details.FirstOrDefault(detail => detail.Contains('€')) ?? "Price not found";
+        var price = PriceRegex().Replace(originalPriceDetail, string.Empty);
+
+        // Find the detail that contains a French zip code
+        var location = details.FirstOrDefault(detail => ZipCodeRegex().IsMatch(detail)) ?? "Location not found";
+
+        var description = details.FirstOrDefault(detail => detail != originalPriceDetail && detail != location) ??
+                          "Description not found";
+
         var adUrl = node.Attributes.First(attr => attr.Name == "href").Value;
-        return new FlatAdDto(details[2], details[1], price, adUrl);
+        return new FlatAdDto(location, description, price, adUrl);
     }
 
     [GeneratedRegex(@"[^0-9,.\u20AC]")]
     private static partial Regex PriceRegex();
+
+    [GeneratedRegex(@"\d{5}")]
+    private static partial Regex ZipCodeRegex();
+
+
+    
 }
