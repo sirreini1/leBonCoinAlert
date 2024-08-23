@@ -1,8 +1,15 @@
+using LeBonCoinAlert.core.LeBonCoinAlert.core;
 using LeBonCoinAlert.DB;
+using LeBonCoinAlert.models;
 
 namespace LeBonCoinAlert.core;
 
-public class AddChecker(FlatAdRepository flatAdRepository, TelegramHandler telegramHandler)
+public interface ISearchCheckService
+{
+    Task CheckForNewAdsPeriodically();
+}
+
+public class SearchCheckService(IFlatAdRepository flatAdRepository, ITelegramService telegramService): ISearchCheckService
 {
     public async Task CheckForNewAdsPeriodically()
     {
@@ -13,7 +20,7 @@ public class AddChecker(FlatAdRepository flatAdRepository, TelegramHandler teleg
         }
     }
 
-    async Task CheckForNewAds()
+    private async Task CheckForNewAds()
     {
         var searchPairs = flatAdRepository.GetUniqueTelegramUserSearchUrlPairs();
 
@@ -27,7 +34,7 @@ public class AddChecker(FlatAdRepository flatAdRepository, TelegramHandler teleg
                 Console.WriteLine("New ads found for user: " + pair.TelegramUser);
                 foreach (var message in newAds.Select(GetFormattedMessage))
                 {
-                    _ = telegramHandler.SendMessageToUser(pair.TelegramUser, message);
+                    _ = telegramService.SendMessageToUser(pair.TelegramUser, message);
                 }
             }
 
@@ -35,7 +42,7 @@ public class AddChecker(FlatAdRepository flatAdRepository, TelegramHandler teleg
         }
     }
 
-    string GetFormattedMessage(FlatAd ad)
+    private static string GetFormattedMessage(FlatAd ad)
     {
         const string leBonCoinBaseUrl = "https://www.leboncoin.fr";
         var message = $"""

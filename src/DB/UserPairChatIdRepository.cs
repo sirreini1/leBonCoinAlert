@@ -1,6 +1,12 @@
 ﻿namespace LeBonCoinAlert.DB;
 
-public class UserPairChatIdRepository(AppDbContext dbContext)
+public interface IUserPairChatIdRepository
+{
+    void SaveUserChatIdPair(UserChatIdPair? pair);
+    UserChatIdPair? FindUserByChatId(string chatId);
+    UserChatIdPair? FindChatByUserId(string userId);
+}
+public class UserPairChatIdRepository(AppDbContext dbContext): IUserPairChatIdRepository
 {
     public void SaveUserChatIdPair(UserChatIdPair? pair)
     {

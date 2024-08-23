@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using System.Web;
 using HtmlAgilityPack;
+using LeBonCoinAlert.models;
 
 namespace LeBonCoinAlert.core;
 

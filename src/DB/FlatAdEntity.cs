@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using LeBonCoinAlert.core;
+using LeBonCoinAlert.models;
 
 namespace LeBonCoinAlert.DB;
 

@@ -1,4 +1,4 @@
-namespace LeBonCoinAlert.core;
+namespace LeBonCoinAlert.models;
 
 public class FlatAd(string location, string description, string price, string searchUrl, string adUrl)
 {
