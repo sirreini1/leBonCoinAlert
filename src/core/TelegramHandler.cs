@@ -142,6 +142,12 @@ namespace LeBonCoinAlert.core
                     }
                 }
 
+                if (msgText.StartsWith("/statistics"))
+                {
+                    var message = flatAdRepository.GetStatisticPerUser(telegramUser);
+                    await bot.SendTextMessageAsync(msg.Chat, message, cancellationToken: cts.Token);
+                }
+
                 if (msgText.StartsWith("/watch"))
                 {
                     var url = msgText.Split(" ")[1];

@@ -29,7 +29,7 @@ public class FlatAdRepository(AppDbContext dbContext)
             .Select(group => new TelegramUserSearchUrlPair(group.Key.TelegramUser, group.Key.SearchUrl))
             .ToList();
     }
-    
+
 
     public void DeleteFlatAd(string id)
     {
@@ -78,6 +78,22 @@ public class FlatAdRepository(AppDbContext dbContext)
     public bool EntriesForURlAndUserExist(string searchUrl, string telegramUser)
     {
         return dbContext.FlatAds.Any(e => e.SearchUrl == searchUrl && e.TelegramUser == telegramUser);
+    }
+
+    public string GetStatisticPerUser(string telegramUser)
+    {
+        var userAds = dbContext.FlatAds.Where(e => e.TelegramUser == telegramUser).ToList();
+        var uniqueSearchUrls = userAds.Select(ad => ad.SearchUrl).Distinct().ToList();
+        var message = $"You are watching {uniqueSearchUrls.Count} unique search URLs. With:\n\n";
+
+        for (var i = 0; i < uniqueSearchUrls.Count; i++)
+        {
+            var url = uniqueSearchUrls[i];
+            var adsForUrl = userAds.Where(ad => ad.SearchUrl == url).ToList();
+            message += $"{adsForUrl.Count} ads for url with id: {i}\n";
+        }
+
+        return message;
     }
 
     public void UpsertFlatAds(List<FlatAd> flatAds, string telegramUser)
