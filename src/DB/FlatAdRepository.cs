@@ -1,5 +1,4 @@
-﻿using LeBonCoinAlert.core;
-using LeBonCoinAlert.models;
+﻿using LeBonCoinAlert.models;
 
 namespace LeBonCoinAlert.DB;
 
@@ -89,10 +88,7 @@ public class FlatAdRepository : IFlatAdRepository
         {
             var entity = FlatAdEntity.FromFlatAd(flatAd, telegramUser);
             var existingAd = _dbContext1.FlatAds.Find(entity.Id);
-            if (existingAd == null)
-            {
-                newAds.Add(flatAd);
-            }
+            if (existingAd == null) newAds.Add(flatAd);
         }
 
         return newAds;

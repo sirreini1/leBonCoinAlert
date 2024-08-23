@@ -1,5 +1,4 @@
 using LeBonCoinAlert.core;
-using LeBonCoinAlert.DB;
 
 namespace LeBonCoinAlert;
 

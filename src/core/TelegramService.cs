@@ -1,105 +1,92 @@
 ﻿// src/core/TelegramHandler.cs
 
-using LeBonCoinAlert.core.LeBonCoinAlert.core;
 using LeBonCoinAlert.DB;
 using LeBonCoinAlert.models.TelegramCommandHandler;
+using LeBonCoinAlert.models.TelegramCommands;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert.core
+namespace LeBonCoinAlert.core;
+
+public interface ITelegramService
 {
-    namespace LeBonCoinAlert.core
+    Task SendMessageToUser(string userId, string message);
+}
+
+public class TelegramService(IUserPairChatIdRepository userPairChatIdRepository, IFlatAdRepository flatAdRepository)
+    : ITelegramService
+{
+    private readonly TelegramBotClient _bot = CreateBot(flatAdRepository, userPairChatIdRepository);
+
+    public async Task SendMessageToUser(string userId, string message)
     {
-        public interface ITelegramService
-        {
-            Task SendMessageToUser(string userId, string message);
-        }
+        var userChatIdPair = userPairChatIdRepository.FindChatByUserId(userId);
+        if (userChatIdPair?.ChatId != null)
+            await _bot.SendTextMessageAsync(userChatIdPair.ChatId, message);
+        else
+            Console.WriteLine("User not found, could not send message");
     }
-    public class TelegramService(IUserPairChatIdRepository userPairChatIdRepository, IFlatAdRepository flatAdRepository): ITelegramService
-    {
-        private readonly TelegramBotClient _bot = CreateBot(flatAdRepository, userPairChatIdRepository);
 
-        public async Task SendMessageToUser(string userId, string message)
+    private static TelegramBotClient CreateBot(IFlatAdRepository flatAdRepository,
+        IUserPairChatIdRepository userPairChatIdRepository)
+    {
+        var botToken = Environment.GetEnvironmentVariable("TOKEN");
+        if (botToken is null) throw new Exception("No bot token found in environment variables");
+
+        var cts = new CancellationTokenSource();
+        var bot = new TelegramBotClient(botToken, cancellationToken: cts.Token);
+        bot.OnError += OnError;
+        bot.OnMessage += OnMessage;
+        bot.OnUpdate += OnUpdate;
+
+        Console.WriteLine("Bot started");
+
+        return bot;
+
+        Task OnError(Exception exception, HandleErrorSource source)
         {
-            var userChatIdPair = userPairChatIdRepository.FindChatByUserId(userId);
-            if (userChatIdPair?.ChatId != null)
-            {
-                await _bot.SendTextMessageAsync(userChatIdPair.ChatId, message);
-            }
-            else
-            {
-                Console.WriteLine("User not found, could not send message");
-            }
+            Console.WriteLine(exception);
+            return Task.CompletedTask;
         }
 
-        private static TelegramBotClient CreateBot(IFlatAdRepository flatAdRepository,
-            IUserPairChatIdRepository userPairChatIdRepository)
+        async Task OnUpdate(Update update)
         {
-            var botToken = Environment.GetEnvironmentVariable("TOKEN");
-            if (botToken is null)
+            await bot.SendTextMessageAsync(update.Message!.Chat,
+                "Curently we only support watching ads from leboncoin.fr by typing /watch and the search url",
+                cancellationToken: cts.Token);
+        }
+
+        async Task OnMessage(Message? msg, UpdateType type)
+        {
+            if (msg?.Text is null)
             {
-                throw new Exception("No bot token found in environment variables");
+                Console.WriteLine("Error no message");
+                return;
             }
 
-            var cts = new CancellationTokenSource();
-            var bot = new TelegramBotClient(botToken, cancellationToken: cts.Token);
-            bot.OnError += OnError;
-            bot.OnMessage += OnMessage;
-            bot.OnUpdate += OnUpdate;
+            var msgText = msg.Text.ToLower();
 
-            Console.WriteLine("Bot started");
+            var telegramUser = msg.From!.Id.ToString();
+            var chatId = msg.Chat.Id.ToString();
+            userPairChatIdRepository.SaveUserChatIdPair(new UserChatIdPair(telegramUser, chatId));
 
-            return bot;
-
-            Task OnError(Exception exception, HandleErrorSource source)
+            var commands = new List<ITelegramCommand>
             {
-                Console.WriteLine(exception);
-                return Task.CompletedTask;
-            }
+                new TelegramCommand("/help", new HelpCommandHandler(bot)),
+                new TelegramCommand("/start", new StartCommandHandler(bot)),
+                new TelegramCommand("/list", new ListCommandHandler(bot, flatAdRepository)),
+                new TelegramCommand("/remove", new RemoveCommandHandler(bot, flatAdRepository)),
+                new TelegramCommand("/statistics", new StatisticsCommandHandler(bot, flatAdRepository)),
+                new TelegramCommand("/watch", new WatchCommandHandler(bot, flatAdRepository))
+            };
 
-            async Task OnUpdate(Update update)
-            {
-                await bot.SendTextMessageAsync(update.Message!.Chat,
-                    $"Curently we only support watching ads from leboncoin.fr by typing /watch and the search url",
-                    cancellationToken: cts.Token);
-            }
-
-            async Task OnMessage(Message? msg, UpdateType type)
-            {
-                if (msg?.Text is null)
-                {
-                    Console.WriteLine("Error no message");
-                    return;
-                }
-
-                var msgText = msg.Text.ToLower();
-
-                var telegramUser = msg.From!.Id.ToString();
-                var chatId = msg.Chat.Id.ToString();
-                userPairChatIdRepository.SaveUserChatIdPair(new UserChatIdPair(telegramUser, chatId));
-
-                var commandHandlers = new Dictionary<string, ITelegramCommandHandler>
-                {
-                    { "/help", new HelpCommandHandler(bot) },
-                    { "/start", new StartCommandHandler(bot) },
-                    { "/list", new ListCommandHandler(bot, flatAdRepository) },
-                    { "/remove", new RemoveCommandHandler(bot, flatAdRepository) },
-                    { "/statistics", new StatisticsCommandHandler(bot, flatAdRepository) },
-                    { "/watch", new WatchCommandHandler(bot, flatAdRepository) }
-                };
-
-                var command = commandHandlers.FirstOrDefault(c => msgText.StartsWith(c.Key));
-                if (command.Value != null)
-                {
-                    await command.Value.HandleCommand(msg, cts);
-                }
-                else
-                {
-                    await bot.SendTextMessageAsync(msg.Chat, "Invalid command", cancellationToken: cts.Token);
-                }
-            }
+            var command = commands.FirstOrDefault(c => msgText.StartsWith(c.CommandString));
+            if (command?.CommandString != null)
+                await command.CommandHandler.HandleCommand(msg, cts);
+            else
+                await bot.SendTextMessageAsync(msg.Chat, "Invalid command", cancellationToken: cts.Token);
         }
     }
 }

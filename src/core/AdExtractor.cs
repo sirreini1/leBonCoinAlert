@@ -16,10 +16,7 @@ public static partial class AdExtractor
 
     private static List<HtmlNode> GetListingNodes(string htmlContent)
     {
-        if (htmlContent == null)
-        {
-            throw new ArgumentNullException(nameof(htmlContent), "HTML content cannot be null.");
-        }
+        if (htmlContent == null) throw new ArgumentNullException(nameof(htmlContent), "HTML content cannot be null.");
 
         var htmlDoc = new HtmlDocument();
         htmlDoc.LoadHtml(htmlContent);
@@ -60,7 +57,4 @@ public static partial class AdExtractor
 
     [GeneratedRegex(@"\d{5}")]
     private static partial Regex ZipCodeRegex();
-
-
-    
 }

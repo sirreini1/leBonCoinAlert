@@ -6,19 +6,16 @@ public interface IUserPairChatIdRepository
     UserChatIdPair? FindUserByChatId(string chatId);
     UserChatIdPair? FindChatByUserId(string userId);
 }
-public class UserPairChatIdRepository(AppDbContext dbContext): IUserPairChatIdRepository
+
+public class UserPairChatIdRepository(AppDbContext dbContext) : IUserPairChatIdRepository
 {
     public void SaveUserChatIdPair(UserChatIdPair? pair)
     {
         var existingPair = dbContext.UserChatIdPairs.Find(pair.Id);
         if (existingPair != null)
-        {
             dbContext.Entry(existingPair).CurrentValues.SetValues(pair);
-        }
         else
-        {
             dbContext.UserChatIdPairs.Add(pair);
-        }
 
         dbContext.SaveChanges();
     }

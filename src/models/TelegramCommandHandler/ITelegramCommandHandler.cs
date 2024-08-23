@@ -2,10 +2,9 @@
 
 using Telegram.Bot.Types;
 
-namespace LeBonCoinAlert.models.TelegramCommandHandler
+namespace LeBonCoinAlert.models.TelegramCommandHandler;
+
+public interface ITelegramCommandHandler
 {
-    public interface ITelegramCommandHandler
-    {
-        Task HandleCommand(Message msg, CancellationTokenSource cts);
-    }
+    Task HandleCommand(Message msg, CancellationTokenSource cts);
 }

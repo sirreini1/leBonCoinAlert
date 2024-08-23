@@ -1,9 +1,8 @@
 ﻿using LeBonCoinAlert;
 using LeBonCoinAlert.core;
-using LeBonCoinAlert.core.LeBonCoinAlert.core;
-using Microsoft.Extensions.DependencyInjection;
 using LeBonCoinAlert.DB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 var services = new ServiceCollection()
@@ -30,6 +29,5 @@ try
 }
 catch (Exception ex)
 {
-
     logger.LogError(ex, "An error occurred while starting the application");
 }

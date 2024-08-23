@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using LeBonCoinAlert.core;
 using LeBonCoinAlert.models;
 
 namespace LeBonCoinAlert.DB;
@@ -14,6 +13,11 @@ public class FlatAdEntity(
     string Id = "")
 
 {
+    //For some reason we need this?
+    public FlatAdEntity() : this("", "", "", "", "", "")
+    {
+    }
+
     [Key] [MaxLength(1000)] public string Id { get; init; } = GenerateId(telegramUser, adUrl);
     [MaxLength(1000)] public string AdUrl { get; init; } = adUrl;
 
@@ -23,11 +27,6 @@ public class FlatAdEntity(
     [MaxLength(1000)] public string Description { get; init; } = description;
     [MaxLength(10)] public string Price { get; init; } = price;
     [MaxLength(1000)] public string SearchUrl { get; init; } = searchUrl;
-
-    //For some reason we need this?
-    public FlatAdEntity() : this("", "", "", "", "", "")
-    {
-    }
 
     public static FlatAdEntity FromFlatAd(FlatAd flatAd, string telegramUser)
     {
