@@ -2,7 +2,7 @@ using Telegram.Bot;
 
 namespace LeBonCoinAlert.core;
 
-public class TelegramBotClientFactory()
+public class TelegramBotClientFactory
 {
     public static TelegramBotClient CreateBotClient()
     {

@@ -7,7 +7,6 @@ namespace LeBonCoinAlert.models.TelegramCommands;
 public abstract class TelegramCommand
 {
     private readonly TelegramBotClient _bot;
-    private string CommandString { get; }
 
     protected TelegramCommand(TelegramBotClient bot, string commandString)
     {
@@ -16,11 +15,11 @@ public abstract class TelegramCommand
         _bot.OnMessage += async (message, updateType) =>
         {
             if (message.Text!.StartsWith(CommandString, StringComparison.CurrentCultureIgnoreCase))
-            {
                 await HandleCommand(message, updateType);
-            }
         };
     }
+
+    private string CommandString { get; }
 
     protected abstract Task HandleCommand(Message msg, UpdateType updateType);
 }

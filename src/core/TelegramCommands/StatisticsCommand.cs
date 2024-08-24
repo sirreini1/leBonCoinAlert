@@ -5,7 +5,8 @@ using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.models.TelegramCommands;
 
-public class StatisticsCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository) : TelegramCommand(bot, "/statistics")
+public class StatisticsCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository)
+    : TelegramCommand(bot, "/statistics")
 {
     private readonly TelegramBotClient _bot = bot;
 

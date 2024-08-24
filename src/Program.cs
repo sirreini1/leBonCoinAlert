@@ -3,7 +3,6 @@ using LeBonCoinAlert.core;
 using LeBonCoinAlert.DB;
 using LeBonCoinAlert.DB.repositories;
 using LeBonCoinAlert.extensions;
-using LeBonCoinAlert.models.TelegramCommands;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

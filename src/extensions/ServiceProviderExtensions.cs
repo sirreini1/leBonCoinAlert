@@ -13,10 +13,7 @@ public static class ServiceProviderExtensions
             .GetTypes()
             .Where(t => t.IsSubclassOf(typeof(TelegramCommand)) && !t.IsAbstract);
 
-        foreach (var commandType in commandTypes)
-        {
-            services.AddSingleton(commandType);
-        }
+        foreach (var commandType in commandTypes) services.AddSingleton(commandType);
 
         return services;
     }
