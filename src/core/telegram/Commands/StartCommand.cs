@@ -4,7 +4,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert.models.TelegramCommands;
+namespace LeBonCoinAlert.core.telegram.Commands;
 
 public class StartCommand(TelegramBotClient bot, IUserPairChatIdRepository userPairChatIdRepository)
     : TelegramCommand(bot, "/start")

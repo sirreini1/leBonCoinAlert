@@ -1,5 +1,7 @@
 ﻿using LeBonCoinAlert;
 using LeBonCoinAlert.core;
+using LeBonCoinAlert.core.LeBonCoin;
+using LeBonCoinAlert.core.telegram;
 using LeBonCoinAlert.DB;
 using LeBonCoinAlert.DB.repositories;
 using LeBonCoinAlert.extensions;
@@ -15,7 +17,7 @@ var services = new ServiceCollection()
     .AddSingleton<IUserPairChatIdRepository, UserPairChatIdRepository>()
     .AddSingleton<TelegramBotClient>(_ => TelegramBotClientFactory.CreateBotClient())
     .AddSingleton<ITelegramMessageService, TelegramMessageMessageService>()
-    .AddSingleton<ISearchCheckService, SearchCheckService>()
+    .AddSingleton<IAdMonitoringService, AdMonitoringService>()
     .AddTelegramCommands() // Add all telegram commands
     .AddLogging(configure => { configure.AddConsole(); }) // Add logging
     .BuildServiceProvider();

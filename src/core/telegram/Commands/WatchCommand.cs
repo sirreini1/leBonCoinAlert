@@ -1,10 +1,9 @@
-using LeBonCoinAlert.core;
 using LeBonCoinAlert.DB.repositories;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert.models.TelegramCommands;
+namespace LeBonCoinAlert.core.telegram.Commands;
 
 public class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository) : TelegramCommand(bot, "/watch")
 {
@@ -21,7 +20,7 @@ public class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdReposit
             return;
         }
 
-        var flatAds = await AdExtractor.GetAdsFromUrl(url);
+        var flatAds = await LeBonCoin.AdExtractor.GetAdsFromUrl(url);
         if (flatAdRepository.EntriesForURlAndUserExist(url, telegramUser))
         {
             await _bot.SendTextMessageAsync(msg.Chat, "Already watching ads for this url",

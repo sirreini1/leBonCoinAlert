@@ -4,7 +4,7 @@ using LeBonCoinAlert.DB.repositories;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 
-namespace LeBonCoinAlert.core;
+namespace LeBonCoinAlert.core.telegram;
 
 public interface ITelegramMessageService
 {

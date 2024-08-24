@@ -1,6 +1,6 @@
 ﻿using System.IO.Compression;
 
-namespace LeBonCoinAlert.core;
+namespace LeBonCoinAlert.core.LeBonCoin;
 
 internal static class Scraper
 {

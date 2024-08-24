@@ -2,7 +2,7 @@
 using HtmlAgilityPack;
 using LeBonCoinAlert.models;
 
-namespace LeBonCoinAlert.core;
+namespace LeBonCoinAlert.core.LeBonCoin;
 
 public static partial class AdExtractor
 {

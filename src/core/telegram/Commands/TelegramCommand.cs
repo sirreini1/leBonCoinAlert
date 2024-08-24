@@ -2,7 +2,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert.models.TelegramCommands;
+namespace LeBonCoinAlert.core.telegram.Commands;
 
 public abstract class TelegramCommand
 {

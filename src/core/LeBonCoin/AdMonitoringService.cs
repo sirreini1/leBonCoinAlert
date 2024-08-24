@@ -1,15 +1,16 @@
+using LeBonCoinAlert.core.telegram;
 using LeBonCoinAlert.DB.repositories;
 using LeBonCoinAlert.models;
 
-namespace LeBonCoinAlert.core;
+namespace LeBonCoinAlert.core.LeBonCoin;
 
-public interface ISearchCheckService
+public interface IAdMonitoringService
 {
     Task CheckForNewAdsPeriodically();
 }
 
-public class SearchCheckService(IFlatAdRepository flatAdRepository, ITelegramMessageService telegramMessageService)
-    : ISearchCheckService
+public class AdMonitoringService(IFlatAdRepository flatAdRepository, ITelegramMessageService telegramMessageService)
+    : IAdMonitoringService
 {
     public async Task CheckForNewAdsPeriodically()
     {

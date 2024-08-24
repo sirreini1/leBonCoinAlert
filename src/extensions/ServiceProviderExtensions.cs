@@ -1,5 +1,5 @@
 using System.Reflection;
-using LeBonCoinAlert.models.TelegramCommands;
+using LeBonCoinAlert.core.telegram.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

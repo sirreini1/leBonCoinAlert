@@ -1,6 +1,6 @@
 using Telegram.Bot;
 
-namespace LeBonCoinAlert.core;
+namespace LeBonCoinAlert.core.telegram;
 
 public class TelegramBotClientFactory
 {
