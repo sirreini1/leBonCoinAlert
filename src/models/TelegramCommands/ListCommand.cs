@@ -1,14 +1,15 @@
-// src/commands/ListCommandHandler.cs
-
-using LeBonCoinAlert.DB;
+using LeBonCoinAlert.DB.repositories;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert.models.TelegramCommandHandler;
+namespace LeBonCoinAlert.models.TelegramCommands;
 
-public class ListCommandHandler(TelegramBotClient bot, IFlatAdRepository flatAdRepository) : ITelegramCommandHandler
+public class ListCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository) : TelegramCommand(bot, "/list")
 {
-    public async Task HandleCommand(Message msg, CancellationTokenSource cts)
+    private readonly TelegramBotClient _bot = bot;
+
+    protected override async Task HandleCommand(Message msg, UpdateType updateType)
     {
         var telegramUser = msg.From!.Id.ToString();
         var userAds = flatAdRepository.GetFlatAdsForUser(telegramUser);
@@ -21,7 +22,7 @@ public class ListCommandHandler(TelegramBotClient bot, IFlatAdRepository flatAdR
 
         if (uniqueSearchUrls.Count == 0) message = "You are not watching any search URLs";
 
-        await bot.SendTextMessageAsync(msg.Chat, message, cancellationToken: cts.Token,
+        await _bot.SendTextMessageAsync(msg.Chat, message,
             linkPreviewOptions: new LinkPreviewOptions { IsDisabled = true });
     }
 }

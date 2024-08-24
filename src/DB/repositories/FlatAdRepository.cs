@@ -1,6 +1,7 @@
-﻿using LeBonCoinAlert.models;
+﻿using LeBonCoinAlert.DB.entities;
+using LeBonCoinAlert.models;
 
-namespace LeBonCoinAlert.DB;
+namespace LeBonCoinAlert.DB.repositories;
 
 public interface IFlatAdRepository
 {

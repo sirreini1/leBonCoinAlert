@@ -1,4 +1,4 @@
-using LeBonCoinAlert.DB;
+using LeBonCoinAlert.DB.repositories;
 using LeBonCoinAlert.models;
 
 namespace LeBonCoinAlert.core;
@@ -8,7 +8,7 @@ public interface ISearchCheckService
     Task CheckForNewAdsPeriodically();
 }
 
-public class SearchCheckService(IFlatAdRepository flatAdRepository, ITelegramService telegramService)
+public class SearchCheckService(IFlatAdRepository flatAdRepository, ITelegramMessageService telegramMessageService)
     : ISearchCheckService
 {
     public async Task CheckForNewAdsPeriodically()
@@ -33,7 +33,7 @@ public class SearchCheckService(IFlatAdRepository flatAdRepository, ITelegramSer
             {
                 Console.WriteLine("New ads found for user: " + pair.TelegramUser);
                 foreach (var message in newAds.Select(GetFormattedMessage))
-                    _ = telegramService.SendMessageToUser(pair.TelegramUser, message);
+                    _ = telegramMessageService.SendMessageToUser(pair.TelegramUser, message);
             }
 
             flatAdRepository.UpsertFlatAds(newAds, pair.TelegramUser);

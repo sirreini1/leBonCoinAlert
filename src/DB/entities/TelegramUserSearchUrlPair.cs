@@ -1,4 +1,4 @@
-namespace LeBonCoinAlert.DB;
+namespace LeBonCoinAlert.DB.entities;
 
 public class TelegramUserSearchUrlPair(string telegramUser, string searchUrl)
 {

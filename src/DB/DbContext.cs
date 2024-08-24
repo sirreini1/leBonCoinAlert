@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LeBonCoinAlert.DB.entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeBonCoinAlert.DB;
 

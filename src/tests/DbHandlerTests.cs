@@ -1,4 +1,5 @@
 ﻿using LeBonCoinAlert.DB;
+using LeBonCoinAlert.DB.repositories;
 using LeBonCoinAlert.models;
 using Xunit;
 

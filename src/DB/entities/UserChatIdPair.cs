@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LeBonCoinAlert.DB;
+namespace LeBonCoinAlert.DB.entities;
 
 public class UserChatIdPair()
 {

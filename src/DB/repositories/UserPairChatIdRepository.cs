@@ -1,4 +1,6 @@
-﻿namespace LeBonCoinAlert.DB;
+﻿using LeBonCoinAlert.DB.entities;
+
+namespace LeBonCoinAlert.DB.repositories;
 
 public interface IUserPairChatIdRepository
 {

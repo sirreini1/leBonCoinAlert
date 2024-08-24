@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using LeBonCoinAlert.models;
 
-namespace LeBonCoinAlert.DB;
+namespace LeBonCoinAlert.DB.entities;
 
 public class FlatAdEntity(
     string location,

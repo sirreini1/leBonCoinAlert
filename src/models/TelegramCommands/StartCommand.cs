@@ -1,17 +1,17 @@
-// src/commands/StartCommandHandler.cs
-
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
-namespace LeBonCoinAlert.models.TelegramCommandHandler;
+namespace LeBonCoinAlert.models.TelegramCommands;
 
-public class StartCommandHandler(TelegramBotClient bot) : ITelegramCommandHandler
+public class StartCommand(TelegramBotClient bot) : TelegramCommand(bot, "/start")
 {
-    public async Task HandleCommand(Message msg, CancellationTokenSource cts)
+    private readonly TelegramBotClient _bot = bot;
+
+    protected override async Task HandleCommand(Message msg, UpdateType updateType)
     {
-        await bot.SendTextMessageAsync(msg.Chat,
+        await _bot.SendTextMessageAsync(msg.Chat,
             "Welcome to the LeBonCoinBot, start watching a search by typing /watch and the search url to watch. Just like this:\n /watch https://www.leboncoin.fr/recherche?.... \n type /help to see all commands",
-            cancellationToken: cts.Token,
             linkPreviewOptions: new LinkPreviewOptions { IsDisabled = true });
     }
 }
