@@ -16,7 +16,7 @@ var services = new ServiceCollection()
     .AddSingleton<IFlatAdRepository, FlatAdRepository>()
     .AddSingleton<IUserPairChatIdRepository, UserPairChatIdRepository>()
     .AddSingleton<TelegramBotClient>(_ => TelegramBotClientFactory.CreateBotClient())
-    .AddSingleton<ITelegramMessageService, TelegramMessageMessageService>()
+    .AddSingleton<ITelegramMessageUserService, TelegramMessageUserUserService>()
     .AddSingleton<IAdMonitoringService, AdMonitoringService>()
     .AddTelegramCommands() // Add all telegram commands
     .AddLogging(configure => { configure.AddConsole(); }) // Add logging

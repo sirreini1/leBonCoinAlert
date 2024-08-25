@@ -1,9 +1,6 @@
 services:
   leboncoinalert:
-    image: leboncoinalert:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: sirreini1/leboncoinalert:latest
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Production

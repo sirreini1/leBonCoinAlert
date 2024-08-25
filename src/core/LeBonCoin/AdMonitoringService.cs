@@ -9,7 +9,7 @@ public interface IAdMonitoringService
     Task CheckForNewAdsPeriodically();
 }
 
-public class AdMonitoringService(IFlatAdRepository flatAdRepository, ITelegramMessageService telegramMessageService)
+public class AdMonitoringService(IFlatAdRepository flatAdRepository, ITelegramMessageUserService telegramMessageUserService)
     : IAdMonitoringService
 {
     public async Task CheckForNewAdsPeriodically()
@@ -34,7 +34,7 @@ public class AdMonitoringService(IFlatAdRepository flatAdRepository, ITelegramMe
             {
                 Console.WriteLine("New ads found for user: " + pair.TelegramUser);
                 foreach (var message in newAds.Select(GetFormattedMessage))
-                    _ = telegramMessageService.SendMessageToUser(pair.TelegramUser, message);
+                    _ = telegramMessageUserService.SendMessageToUser(pair.TelegramUser, message);
             }
 
             flatAdRepository.UpsertFlatAds(newAds, pair.TelegramUser);

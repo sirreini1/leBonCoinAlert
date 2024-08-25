@@ -6,16 +6,16 @@ using Telegram.Bot;
 
 namespace LeBonCoinAlert.core.telegram;
 
-public interface ITelegramMessageService
+public interface ITelegramMessageUserService
 {
     Task SendMessageToUser(string userId, string message);
 }
 
-public class TelegramMessageMessageService(
+public class TelegramMessageUserUserService(
     IUserPairChatIdRepository userPairChatIdRepository,
     TelegramBotClient bot,
-    ILogger<TelegramMessageMessageService> logger)
-    : ITelegramMessageService
+    ILogger<TelegramMessageUserUserService> logger)
+    : ITelegramMessageUserService
 {
     public async Task SendMessageToUser(string userId, string message)
     {
