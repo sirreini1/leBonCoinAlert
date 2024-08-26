@@ -1,13 +1,17 @@
 using LeBonCoinAlert.DB.entities;
 using LeBonCoinAlert.DB.repositories;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
-public class StartCommand(TelegramBotClient bot, IUserPairChatIdRepository userPairChatIdRepository)
-    : TelegramCommand(bot, "/start")
+public class StartCommand(
+    TelegramBotClient bot,
+    IUserPairChatIdRepository userPairChatIdRepository,
+    ILogger<TelegramCommand> logger)
+    : TelegramCommand(bot, "/start", logger)
 {
     private readonly TelegramBotClient _bot = bot;
 

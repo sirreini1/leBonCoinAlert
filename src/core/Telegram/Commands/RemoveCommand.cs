@@ -1,11 +1,12 @@
 using LeBonCoinAlert.DB.repositories;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
-public class RemoveCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository) : TelegramCommand(bot, "/remove")
+public class RemoveCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository,ILogger<TelegramCommand> logger) : TelegramCommand(bot, "/remove", logger)
 {
     private readonly TelegramBotClient _bot = bot;
 

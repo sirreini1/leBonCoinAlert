@@ -1,10 +1,11 @@
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
-public class HelpCommand(TelegramBotClient bot) : TelegramCommand(bot, "/help")
+public class HelpCommand(TelegramBotClient bot, ILogger<TelegramCommand> logger) : TelegramCommand(bot, "/help", logger)
 {
     private readonly TelegramBotClient _bot = bot;
 

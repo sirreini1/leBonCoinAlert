@@ -1,11 +1,13 @@
 using LeBonCoinAlert.DB.repositories;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
-public class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository) : TelegramCommand(bot, "/watch")
+public class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository, ILogger<TelegramCommand> logger)
+    : TelegramCommand(bot, "/watch", logger)
 {
     private readonly TelegramBotClient _bot = bot;
 
