@@ -8,7 +8,7 @@ public static partial class AdExtractor
 {
     public static async Task<List<FlatAd>> GetAdsFromUrl(string searchUrl)
     {
-        var content = await Scraper.FetchPageContent(searchUrl);
+        var content = await PageContentRetriever.FetchPageContent(searchUrl);
         var adNodes = GetListingNodes(content);
         var flatAdDtos = adNodes.Select(ExtractAdDetails).ToList();
         return flatAdDtos.Select(dto => new FlatAd(dto, searchUrl)).ToList();

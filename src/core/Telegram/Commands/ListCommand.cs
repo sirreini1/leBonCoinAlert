@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using LeBonCoinAlert.DB.repositories;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -6,8 +7,8 @@ using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
-public class ListCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository, ILogger<TelegramCommand> logger)
-    : TelegramCommand(bot, "/list", logger)
+public partial class ListCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository, ILogger<TelegramCommand> logger)
+    : TelegramCommand(bot, ListRegex(), logger)
 {
     private readonly TelegramBotClient _bot = bot;
 
@@ -27,4 +28,7 @@ public class ListCommand(TelegramBotClient bot, IFlatAdRepository flatAdReposito
         await _bot.SendTextMessageAsync(msg.Chat, message,
             linkPreviewOptions: new LinkPreviewOptions { IsDisabled = true });
     }
+
+    [GeneratedRegex("/list", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex ListRegex();
 }

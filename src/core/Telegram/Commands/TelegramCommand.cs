@@ -2,20 +2,19 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using System.Text.RegularExpressions;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
 public abstract class TelegramCommand
 {
-    private readonly TelegramBotClient _bot;
 
-    protected TelegramCommand(TelegramBotClient bot, string commandString, ILogger<TelegramCommand> logger)
+    protected TelegramCommand(TelegramBotClient bot, Regex commandRegex, ILogger<TelegramCommand> logger)
     {
-        _bot = bot;
-        CommandString = commandString;
-        _bot.OnMessage += async (message, updateType) =>
+
+        bot.OnMessage += async (message, updateType) =>
         {
-            if (message.Text!.StartsWith(CommandString, StringComparison.CurrentCultureIgnoreCase))
+            if (commandRegex.IsMatch(message.Text!))
             {
                 try
                 {
@@ -23,7 +22,7 @@ public abstract class TelegramCommand
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Error while handling command {CommandString}", CommandString);
+                    logger.LogError(e, "Error while handling command {CommandString}", commandRegex.ToString());
                     await bot.SendTextMessageAsync(message.Chat, "An error occurred while processing the command");
                     throw;
                 }
@@ -31,8 +30,5 @@ public abstract class TelegramCommand
         };
     }
     
-
-    private string CommandString { get; }
-
     protected abstract Task HandleCommand(Message msg, UpdateType updateType);
 }

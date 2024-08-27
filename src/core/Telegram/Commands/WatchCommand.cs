@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using LeBonCoinAlert.DB.repositories;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -6,8 +7,8 @@ using Telegram.Bot.Types.Enums;
 
 namespace LeBonCoinAlert.core.telegram.Commands;
 
-public class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository, ILogger<TelegramCommand> logger)
-    : TelegramCommand(bot, "/watch", logger)
+public partial class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdRepository, ILogger<TelegramCommand> logger)
+    : TelegramCommand(bot, WatchRegex(), logger)
 {
     private readonly TelegramBotClient _bot = bot;
 
@@ -36,4 +37,7 @@ public class WatchCommand(TelegramBotClient bot, IFlatAdRepository flatAdReposit
                 linkPreviewOptions: new LinkPreviewOptions { IsDisabled = true });
         }
     }
+
+    [GeneratedRegex("/watch", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex WatchRegex();
 }
